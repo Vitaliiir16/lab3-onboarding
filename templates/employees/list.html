@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Employees — SAP Onboarding{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Employees</h1>
+    <a href="{{ url_for('employees.create_employee') }}" class="btn btn-primary">+ Add Employee</a>
+</div>
+
+{% if employees %}
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Position</th>
+            <th>Start Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for emp in employees %}
+        <tr>
+            <td>{{ emp.id }}</td>
+            <td>{{ emp.name }}</td>
+            <td>{{ emp.email }}</td>
+            <td>{{ emp.position }}</td>
+            <td>{{ emp.start_date }}</td>
+            <td>
+                <span class="badge badge-{{ emp.status }}">
+                    {% if emp.status == 'pending' %}Pending
+                    {% elif emp.status == 'in_progress' %}In Progress
+                    {% else %}Completed{% endif %}
+                </span>
+            </td>
+            <td class="actions">
+                <a href="{{ url_for('employees.edit_employee', employee_id=emp.id) }}" class="btn btn-sm btn-edit">Edit</a>
+                <form method="POST" action="{{ url_for('employees.delete_employee', employee_id=emp.id) }}" class="inline-form">
+                    <button type="submit" class="btn btn-sm btn-delete" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+    <p>No employees found.</p>
+    <a href="{{ url_for('employees.create_employee') }}" class="btn btn-primary">Add First Employee</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — SAP Onboarding{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>SAP SuccessFactors — People Onboarding</h1>
+    <p class="subtitle">Employee onboarding management system for IT companies</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-info">
+            <span class="stat-number">{{ stats.employees }}</span>
+            <span class="stat-label">Employees</span>
+        </div>
+        <a href="{{ url_for('employees.list_employees') }}" class="stat-link">View all →</a>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">💻</div>
+        <div class="stat-info">
+            <span class="stat-number">{{ stats.equipment }}</span>
+            <span class="stat-label">Equipment</span>
+        </div>
+        <a href="{{ url_for('equipment.list_equipment') }}" class="stat-link">View all →</a>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">🔑</div>
+        <div class="stat-info">
+            <span class="stat-number">{{ stats.accounts }}</span>
+            <span class="stat-label">Accounts</span>
+        </div>
+        <a href="{{ url_for('accounts.list_accounts') }}" class="stat-link">View all →</a>
+    </div>
+</div>
+
+{% if recent_employees %}
+<div class="section">
+    <h2>Recent Employees</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Position</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emp in recent_employees %}
+            <tr>
+                <td>{{ emp.id }}</td>
+                <td>{{ emp.name }}</td>
+                <td>{{ emp.email }}</td>
+                <td>{{ emp.position }}</td>
+                <td>
+                    <span class="badge badge-{{ emp.status }}">
+                        {% if emp.status == 'pending' %}Pending
+                        {% elif emp.status == 'in_progress' %}In Progress
+                        {% else %}Completed{% endif %}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

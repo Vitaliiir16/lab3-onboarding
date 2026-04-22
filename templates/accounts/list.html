@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Accounts — SAP Onboarding{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Accounts</h1>
+    <a href="{{ url_for('accounts.create_account') }}" class="btn btn-primary">+ Create Account</a>
+</div>
+
+{% if accounts %}
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>System</th>
+            <th>Permissions</th>
+            <th>Status</th>
+            <th>Employee</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for acc in accounts %}
+        <tr>
+            <td>{{ acc.id }}</td>
+            <td><code>{{ acc.username }}</code></td>
+            <td>
+                <span class="badge badge-type">
+                    {% if acc.system_name == 'email' %}📧 Email
+                    {% elif acc.system_name == 'jira' %}📋 Jira
+                    {% elif acc.system_name == 'gitlab' %}🦊 GitLab
+                    {% elif acc.system_name == 'slack' %}💬 Slack
+                    {% elif acc.system_name == 'vpn' %}🔒 VPN
+                    {% else %}🖥️ {{ acc.system_name }}{% endif %}
+                </span>
+            </td>
+            <td>
+                <span class="badge badge-perm-{{ acc.permissions }}">{{ acc.permissions }}</span>
+            </td>
+            <td>
+                {% if acc.is_active %}
+                    <span class="badge badge-completed">Active</span>
+                {% else %}
+                    <span class="badge badge-pending">Inactive</span>
+                {% endif %}
+            </td>
+            <td>{{ acc.employee.name if acc.employee else '—' }}</td>
+            <td class="actions">
+                <a href="{{ url_for('accounts.edit_account', account_id=acc.id) }}" class="btn btn-sm btn-edit">Edit</a>
+                <form method="POST" action="{{ url_for('accounts.delete_account', account_id=acc.id) }}" class="inline-form">
+                    <button type="submit" class="btn btn-sm btn-delete" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+    <p>No accounts found.</p>
+    <a href="{{ url_for('accounts.create_account') }}" class="btn btn-primary">Create First Account</a>
+</div>
+{% endif %}
+{% endblock %}
