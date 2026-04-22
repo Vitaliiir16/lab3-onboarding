@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SAP SuccessFactors — Onboarding{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="{{ url_for('main.index') }}">
+                <span class="brand-accent">GL</span> Onboarding
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('main.index') }}" class="{% if request.endpoint == 'main.index' %}active{% endif %}">Dashboard</a></li>
+            <li><a href="{{ url_for('employees.list_employees') }}" class="{% if 'employees' in request.endpoint %}active{% endif %}">Employees</a></li>
+            <li><a href="{{ url_for('equipment.list_equipment') }}" class="{% if 'equipment' in request.endpoint %}active{% endif %}">Equipment</a></li>
+            <li><a href="{{ url_for('accounts.list_accounts') }}" class="{% if 'accounts' in request.endpoint %}active{% endif %}">Accounts</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>Lab 3 — MVC Web Application | <span>SAP SuccessFactors</span> Onboarding System</p>
+    </footer>
+</body>
+</html>

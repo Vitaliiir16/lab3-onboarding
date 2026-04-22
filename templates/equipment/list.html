@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Equipment — SAP Onboarding{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Equipment</h1>
+    <a href="{{ url_for('equipment.create_equipment') }}" class="btn btn-primary">+ Add Equipment</a>
+</div>
+
+{% if equipment_list %}
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Serial Number</th>
+            <th>Type</th>
+            <th>Model</th>
+            <th>Employee</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for eq in equipment_list %}
+        <tr>
+            <td>{{ eq.id }}</td>
+            <td><code>{{ eq.serial_number }}</code></td>
+            <td>
+                <span class="badge badge-type">
+                    {% if eq.equipment_type == 'laptop' %}💻 Laptop
+                    {% elif eq.equipment_type == 'monitor' %}🖥️ Monitor
+                    {% elif eq.equipment_type == 'keyboard' %}⌨️ Keyboard
+                    {% elif eq.equipment_type == 'mouse' %}🖱️ Mouse
+                    {% elif eq.equipment_type == 'headset' %}🎧 Headset
+                    {% else %}📦 {{ eq.equipment_type }}{% endif %}
+                </span>
+            </td>
+            <td>{{ eq.model }}</td>
+            <td>{{ eq.employee.name if eq.employee else '—' }}</td>
+            <td class="actions">
+                <a href="{{ url_for('equipment.edit_equipment', equipment_id=eq.id) }}" class="btn btn-sm btn-edit">Edit</a>
+                <form method="POST" action="{{ url_for('equipment.delete_equipment', equipment_id=eq.id) }}" class="inline-form">
+                    <button type="submit" class="btn btn-sm btn-delete" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+    <p>No equipment found.</p>
+    <a href="{{ url_for('equipment.create_equipment') }}" class="btn btn-primary">Add First Equipment</a>
+</div>
+{% endif %}
+{% endblock %}
